@@ -20,25 +20,18 @@ public class InvoiceController {
     private InvoiceProcessorService invoiceProcessorService;
 
     /**
-     * Endpoint to extract values from the DTO and print them.
+     * Endpoint to process a Base64-encoded PDF and extract invoice details.
      */
     @PostMapping("/print-dto")
     public ResponseEntity<String> printInvoiceDTO(@RequestBody Map<String, String> request) {
         try {
-            // Extract Base64 string from JSON request
             String base64Pdf = request.get("base64Pdf");
             if (base64Pdf == null || base64Pdf.trim().isEmpty()) {
                 return ResponseEntity.badRequest().body("Invalid request: base64Pdf is missing.");
             }
 
-            // Decode Base64 into a byte array
-            byte[] pdfBytes = Base64.getDecoder().decode(base64Pdf);
-
-            // Convert byte array into an InputStream
-            ByteArrayInputStream pdfStream = new ByteArrayInputStream(pdfBytes);
-
-            // Process the PDF and extract the invoice DTO
-            XmlInvoiceDetailsDTO invoiceDTO = invoiceProcessorService.processInvoice(pdfStream);
+            // Process Base64 PDF and extract invoice DTO
+            XmlInvoiceDetailsDTO invoiceDTO = invoiceProcessorService.processBase64Invoice(base64Pdf);
 
             // Print extracted values
             String output = "Extracted Invoice Data:\n"

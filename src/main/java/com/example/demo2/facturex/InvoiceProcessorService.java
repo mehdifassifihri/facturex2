@@ -18,18 +18,26 @@ import java.util.Map;
 public class InvoiceProcessorService {
 
     /**
+     * Decodes a Base64-encoded PDF and processes it.
+     */
+    public XmlInvoiceDetailsDTO processBase64Invoice(String base64Pdf) throws IOException {
+        // Decode Base64 string to byte array
+        byte[] pdfBytes = decodeBase64ToBytes(base64Pdf);
+
+        // Convert byte array to InputStream and process invoice
+        return processInvoice(new ByteArrayInputStream(pdfBytes));
+    }
+
+    /**
      * Processes the uploaded PDF InputStream:
      * 1. Extracts the embedded XML.
      * 2. Parses it into an Invoice object.
      */
     public XmlInvoiceDetailsDTO processInvoice(InputStream pdfStream) throws IOException {
-        // Extract XML from PDF in memory
         byte[] xmlBytes = extractXmlFromPdf(pdfStream);
         if (xmlBytes == null) {
             throw new IOException("No embedded XML found in the PDF.");
         }
-
-        // Parse XML to Java Object
         return parseXmlToInvoice(xmlBytes);
     }
 
@@ -65,12 +73,20 @@ public class InvoiceProcessorService {
             JAXBContext context = JAXBContext.newInstance(XmlInvoiceDetailsDTO.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
             return (XmlInvoiceDetailsDTO) unmarshaller.unmarshal(bais);
-        } catch (JAXBException e) {
+        } catch (JAXBException | IOException e) {
             throw new RuntimeException("Error parsing XML: " + e.getMessage(), e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
+    /**
+     * Decodes a Base64 string into a byte array.
+     */
+    private byte[] decodeBase64ToBytes(String base64) {
+        try {
+            return Base64.getDecoder().decode(base64);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid Base64 input: " + e.getMessage(), e);
+        }
+    }
 
 }
