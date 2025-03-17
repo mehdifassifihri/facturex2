@@ -11,19 +11,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.util.Base64;
 import java.util.Map;
 
 @Service
 public class InvoiceProcessorService {
 
     /**
-     * Processes the uploaded PDF file:
+     * Processes the uploaded PDF InputStream:
      * 1. Extracts the embedded XML.
      * 2. Parses it into an Invoice object.
      */
-    public XmlInvoiceDetailsDTO processInvoice(MultipartFile file) throws IOException {
+    public XmlInvoiceDetailsDTO processInvoice(InputStream pdfStream) throws IOException {
         // Extract XML from PDF in memory
-        byte[] xmlBytes = extractXmlFromPdf(file.getInputStream());
+        byte[] xmlBytes = extractXmlFromPdf(pdfStream);
         if (xmlBytes == null) {
             throw new IOException("No embedded XML found in the PDF.");
         }
@@ -35,7 +36,7 @@ public class InvoiceProcessorService {
     /**
      * Extracts an XML file embedded inside a PDF.
      */
-    public byte[] extractXmlFromPdf(InputStream pdfStream) throws IOException {
+    private byte[] extractXmlFromPdf(InputStream pdfStream) throws IOException {
         try (PDDocument document = PDDocument.load(pdfStream)) {
             var catalog = document.getDocumentCatalog();
             var embeddedFiles = catalog.getNames().getEmbeddedFiles().getNames();
@@ -64,8 +65,12 @@ public class InvoiceProcessorService {
             JAXBContext context = JAXBContext.newInstance(XmlInvoiceDetailsDTO.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
             return (XmlInvoiceDetailsDTO) unmarshaller.unmarshal(bais);
-        } catch (JAXBException | IOException e) {
+        } catch (JAXBException e) {
             throw new RuntimeException("Error parsing XML: " + e.getMessage(), e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
+
+
 }
