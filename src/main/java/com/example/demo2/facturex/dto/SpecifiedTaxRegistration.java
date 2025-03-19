@@ -5,17 +5,18 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "ReceivableSpecifiedTradeAccountingAccount")
+@XmlRootElement(name = "SpecifiedTaxRegistration")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ReceivableSpecifiedTradeAccountingAccount {
-    @XmlElement(name = "ID", namespace = "urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100")
-    private String ID;
+public class SpecifiedTaxRegistration {
 
-    public String getID() {
-        return ID;
+    @XmlElement(name = "ID", namespace = "urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100")
+    private IDBuyer Id;
+
+    public IDBuyer getId() {
+        return Id;
     }
 
-    public void setID(String ID) {
-        this.ID = ID;
+    public void setId(IDBuyer id) {
+        Id = id;
     }
 }

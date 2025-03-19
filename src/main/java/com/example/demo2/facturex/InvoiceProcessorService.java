@@ -9,7 +9,10 @@ import org.apache.pdfbox.pdmodel.common.filespecification.PDComplexFileSpecifica
 import org.apache.pdfbox.pdmodel.common.filespecification.PDEmbeddedFile;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Base64;
 import java.util.Map;
 
@@ -72,7 +75,8 @@ public class InvoiceProcessorService {
             JAXBContext context = JAXBContext.newInstance(XmlInvoiceDetailsDTO.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
             return (XmlInvoiceDetailsDTO) unmarshaller.unmarshal(bais);
-        } catch (JAXBException | IOException e) {
+        }
+        catch (JAXBException | IOException e) {
             throw new RuntimeException("Error parsing XML: " + e.getMessage(), e);
         }
     }
@@ -83,7 +87,8 @@ public class InvoiceProcessorService {
     private byte[] decodeBase64ToBytes(String base64) {
         try {
             return Base64.getDecoder().decode(base64);
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid Base64 input: " + e.getMessage(), e);
         }
     }

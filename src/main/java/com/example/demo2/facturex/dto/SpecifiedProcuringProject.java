@@ -5,17 +5,17 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "ReceivableSpecifiedTradeAccountingAccount")
+@XmlRootElement(name = "SpecifiedProcuringProject")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ReceivableSpecifiedTradeAccountingAccount {
+public class SpecifiedProcuringProject {
     @XmlElement(name = "ID", namespace = "urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100")
-    private String ID;
+    private String referenceProjet;
 
-    public String getID() {
-        return ID;
+    public String getReferenceProjet() {
+        return referenceProjet;
     }
 
-    public void setID(String ID) {
-        this.ID = ID;
+    public void setReferenceProjet(String referenceProjet) {
+        this.referenceProjet = referenceProjet;
     }
 }
